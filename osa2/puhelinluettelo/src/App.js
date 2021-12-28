@@ -11,6 +11,25 @@ const Number = ({namn,nummer,deleteClick,id}) => {
   )
 }
 
+const Notification = ({ message,type }) => {
+  if (message === null) {
+    return null
+  }
+  if(type===0){
+    return (
+      <div className="notification">
+        {message}
+      </div>
+    )
+  }else{
+    return (
+      <div className="error">
+        {message}
+      </div>
+    )
+  }
+}
+
 const Persons = ({notesToShow,deleteClick}) => {
   return(
     <ul>
@@ -48,6 +67,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
+  const [errorType, setErrorType] = useState(0)
 
   const deleteNumber = (idd,name) => {
     if(window.confirm(`Delete ${name}?`)){
@@ -73,6 +94,12 @@ const App = () => {
         setPersons(persons.concat(returnedNum))
         setNewNumber('')
         setNewName('')
+        setErrorType(0)
+        setErrorMessage(`Added ${numObject.name}`
+        )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
       })
     }else{
       if(window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`)){
@@ -83,6 +110,16 @@ const App = () => {
         .update(changedNum.id,changedNum)
         .then(updatetNum => {
           setPersons(persons.map(number => number.id!==num.id ? number : updatetNum))
+        })
+        .catch(error => {
+          console.log('fail')
+          setErrorType(1)
+          setErrorMessage(`Information of ${num.name} has already been removed from server`
+          )
+          setPersons(persons.filter(per => per.id !== num.id))
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
         })
       }
     }
@@ -113,6 +150,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} type={errorType}/>
       <Filter newFilter={newFilter} handleFilterChange={handleFilterChange} />
       <h4>Add a new</h4>
       <PersonSubmitter addNumber={addNumber} newName={newName} newNumber={newNumber} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
