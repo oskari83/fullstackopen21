@@ -1,0 +1,24 @@
+{
+  "name": "part3",
+  "version": "1.0.0",
+  "description": "test",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oskari83/fullstackopen21.git"
+  },
+  "keywords": [
+    "part3",
+    "test"
+  ],
+  "author": "oskari",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/oskari83/fullstackopen21/issues"
+  },
+  "homepage": "https://github.com/oskari83/fullstackopen21#readme"
+}
