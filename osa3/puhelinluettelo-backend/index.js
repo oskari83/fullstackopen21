@@ -1,9 +1,12 @@
 const express = require('express')
 const morgan = require('morgan')
 const app = express()
+const cors = require('cors')
 
 morgan.token('body', (req, res) => JSON.stringify(req.body));
 
+app.use(cors())
+app.use(express.static('build'))
 app.use(express.json())
 app.use(morgan(':method :url :status :response-time ms - :res[content-length] :body - :req[content-length]'));
 
@@ -27,7 +30,12 @@ let numbers = [
     id: 4,
     name: "Mary Poppendick",
     number: "39-23-6423122"
-}
+  },
+  {
+    id: 5,
+    name: "Oskari Peltonen",
+    number: "040-222-6833"
+ }
 ]
 
 app.get('/info', (req, res) => {
@@ -55,8 +63,8 @@ app.get('/api/persons/:id', (request, response) => {
 
 app.delete('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
-    nums = numbers.filter(num => num.id !== id)
-  
+    numbers = numbers.filter(num => num.id !== id)
+    console.log(id)
     response.status(204).end()
 })
 
@@ -98,7 +106,7 @@ app.post('/api/persons', (request, response) => {
     response.json(number)
 })
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })

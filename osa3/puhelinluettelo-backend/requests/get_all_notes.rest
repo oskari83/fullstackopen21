@@ -1,7 +1,1 @@
-POST http://localhost:3001/api/persons/
-Content-Type: application/json
-
-{
-    "name": "Oskari Peltonen",
-    "number": "044-321-2575"
-}
+DELETE https://guarded-cove-25740.herokuapp.com/api/persons/3376969
