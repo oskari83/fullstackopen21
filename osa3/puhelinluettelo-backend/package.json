@@ -13,7 +13,8 @@
     "build:ui": "rm -rf build && cd ../puhelinluettelo-frontend/ && npm run build && cp -r build ../puhelinluettelo-backend",
     "deploy": "git push heroku main",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push && npm run deploy",
-    "logs:prod": "heroku logs --tail"
+    "logs:prod": "heroku logs --tail",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
@@ -30,9 +31,12 @@
     "express": "^4.17.2",
     "heroku": "^7.59.2",
     "mongoose": "^6.1.4",
+    "mongoose-unique-validator": "^3.0.0",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "eslint": "^8.6.0",
+    "eslint-plugin-react": "^7.28.0",
     "nodemon": "^2.0.15"
   }
 }

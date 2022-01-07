@@ -102,6 +102,16 @@ const App = () => {
           setErrorMessage(null)
         }, 5000)
       })
+      .catch(error => {
+        setNewNumber('')
+        setNewName('')
+        setErrorType(1)
+        setErrorMessage(error.response.data.error)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+        console.log(error.response.data)
+      })
     }else{
       if(window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`)){
         const num = persons.find(name => name.name===newName)

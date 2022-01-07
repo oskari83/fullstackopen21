@@ -1,1 +1,7 @@
-DELETE https://guarded-cove-25740.herokuapp.com/api/persons/3376969
+POST https://guarded-cove-25740.herokuapp.com/api/persons/
+Content-Type: application/json
+
+{
+    "name": "Maija Meikalainen",
+    "number": "123123213133"
+}

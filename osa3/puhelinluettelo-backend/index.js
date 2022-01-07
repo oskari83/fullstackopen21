@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const express = require('express')
 const morgan = require('morgan')
 require('dotenv').config()
@@ -5,7 +6,7 @@ const app = express()
 const cors = require('cors')
 const NumberMD = require('./models/NumberMongo')
 
-morgan.token('body', (req, res) => JSON.stringify(req.body));
+morgan.token('body', (req) => JSON.stringify(req.body))
 
 app.use(cors())
 app.use(express.static('build'))
@@ -26,48 +27,51 @@ app.get('/api/persons', (req, res) => {
 
 app.get('/api/persons/:id', (request, response, next) => {
   NumberMD.findById(request.params.id)
-  .then(number =>{
-    if(number){
-      response.json(number)
-    } else{
-      response.status(404).end()
-    }
-  })
-  .catch(error => next(error))
+    .then(number => {
+      if(number){
+        response.json(number)
+      } else{
+        response.status(404).end()
+      }
+    })
+    .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response,next) => {
   NumberMD.findByIdAndDelete(request.params.id)
-  .then(result => {
-    response.status(204).end()
-  })
-  .catch(error => next(error))
+    .then(() => {
+      response.status(204).end()
+    })
+    .catch(error => next(error))
 })
 
-app.post('/api/persons', (request, response) => {
-    const body = request.body
-  
-    if (!body.name) {
-      return response.status(400).json({ 
-        error: 'name missing' 
-      })
-    }
+app.post('/api/persons', (request, response, next) => {
+  const body = request.body
 
-    if (!body.number) {
-        return response.status(400).json({ 
-          error: 'number missing' 
-        })
-    }
-  
-    const number = new NumberMD({
-      name: body.name,
-      number: body.number,
-      date: new Date()
+  if (!body.name) {
+    return response.status(400).json({
+      error: 'name missing'
     })
-    
-    number.save().then(savedNumber => {
-      response.json(savedNumber)
+  }
+
+  if (!body.number) {
+    return response.status(400).json({
+      error: 'number missing'
     })
+  }
+
+  const number = new NumberMD({
+    name: body.name,
+    number: body.number,
+    date: new Date()
+  })
+
+  number.save()
+    .then(savedNumber => savedNumber.toJSON())
+    .then(savedAndFormattedNumber => {
+      response.json(savedAndFormattedNumber)
+    })
+    .catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
@@ -97,6 +101,8 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
+  }else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
   }
 
   next(error)
