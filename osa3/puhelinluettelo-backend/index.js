@@ -1,78 +1,48 @@
 const express = require('express')
 const morgan = require('morgan')
+require('dotenv').config()
 const app = express()
 const cors = require('cors')
+const NumberMD = require('./models/NumberMongo')
 
 morgan.token('body', (req, res) => JSON.stringify(req.body));
 
 app.use(cors())
 app.use(express.static('build'))
 app.use(express.json())
-app.use(morgan(':method :url :status :response-time ms - :res[content-length] :body - :req[content-length]'));
-
-let numbers = [
-  {
-    id: 1,
-    name: "Arto Hellas",
-    number: "040-123456"
-  },
-  {
-    id: 2,
-    name: "Ada Lovelace",
-    number: "39-44-5323523"
-  },
-  {
-    id: 3,
-    name: "Dan Abramov",
-    number: "12-43-234345"
-  },
-  {
-    id: 4,
-    name: "Mary Poppendick",
-    number: "39-23-6423122"
-  },
-  {
-    id: 5,
-    name: "Oskari Peltonen",
-    number: "040-222-6833"
- }
-]
+app.use(morgan(':method :url :status :response-time ms - :res[content-length] :body - :req[content-length]'))
 
 app.get('/info', (req, res) => {
-  res.send(`<p>Phonebook has info for ${numbers.length} people</p> <p>${new Date()}</p>`)
-})
-
-app.get('/', (req, res) => {
-  res.send('<h1>Hello World!</h1>')
+  NumberMD.find({}).then(result => {
+    res.send(`<p>Phonebook has info for ${result.length} people</p> <p>${new Date()}</p>`)
+  })
 })
 
 app.get('/api/persons', (req, res) => {
-  res.json(numbers)
+  NumberMD.find({}).then(result => {
+    res.json(result)
+  })
 })
 
-app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const cNum = numbers.find(num => num.id === id)
-    
-    if (cNum) {
-      response.json(cNum)
-    } else {
+app.get('/api/persons/:id', (request, response, next) => {
+  NumberMD.findById(request.params.id)
+  .then(number =>{
+    if(number){
+      response.json(number)
+    } else{
       response.status(404).end()
     }
+  })
+  .catch(error => next(error))
 })
 
-app.delete('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    numbers = numbers.filter(num => num.id !== id)
-    console.log(id)
+app.delete('/api/persons/:id', (request, response,next) => {
+  NumberMD.findByIdAndDelete(request.params.id)
+  .then(result => {
     response.status(204).end()
+  })
+  .catch(error => next(error))
 })
-
-const generateId = (min,max) => {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
-}
 
 app.post('/api/persons', (request, response) => {
     const body = request.body
@@ -88,23 +58,50 @@ app.post('/api/persons', (request, response) => {
           error: 'number missing' 
         })
     }
-
-    if(numbers.some(element => element.name === body.name )){
-        return response.status(400).json({ 
-            error: 'name must be unique' 
-        })
-    }
   
-    const number = {
+    const number = new NumberMD({
       name: body.name,
       number: body.number,
-      date: new Date(),
-      id: generateId(1,9999999),
-    }
-  
-    numbers = numbers.concat(number)
-    response.json(number)
+      date: new Date()
+    })
+    
+    number.save().then(savedNumber => {
+      response.json(savedNumber)
+    })
 })
+
+app.put('/api/persons/:id', (request, response, next) => {
+  const body = request.body
+
+  const number = {
+    name: body.name,
+    number: body.number,
+  }
+
+  NumberMD.findByIdAndUpdate(request.params.id, number, { new: true })
+    .then(updatedNumber => {
+      response.json(updatedNumber)
+    })
+    .catch(error => next(error))
+})
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
+// olemattomien osoitteiden käsittely
+app.use(unknownEndpoint)
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  }
+
+  next(error)
+}
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
