@@ -51,7 +51,6 @@ const mostLikes = (blogs) => {
           likes: authorLikes[key]
         })
     }
-    console.log(results)
     return results.reduce((max, blog) => {return max.likes > blog.likes ? max : blog},{})
 }
 
