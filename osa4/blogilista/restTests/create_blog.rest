@@ -1,0 +1,9 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlVsdHJhIiwiaWQiOiI2MWViMDhmMTE1MGVmN2Y2YzlhM2NmZGMiLCJpYXQiOjE2NDI3OTUzNzgsImV4cCI6MTY0Mjc5ODk3OH0.zQ_PwJPl4taEYodU0WdNhWPkU_Ioh8_4-UbnXcJDCCA
+
+{
+    "title": "MyBlog2",
+    "author": "Tuu",
+    "url": "www.spokewrote.com"
+}
