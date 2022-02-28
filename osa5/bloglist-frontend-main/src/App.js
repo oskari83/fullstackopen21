@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
-import loginService from './services/login' 
+import loginService from './services/login'
 import Notification from './components/Notification'
 import BlogCreateForm from './components/BlogCreateForm'
 import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('') 
-  const [password, setPassword] = useState('') 
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
 
@@ -19,8 +19,8 @@ const App = () => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs.sort(function (blg, blg2) {
         return parseInt(blg2.likes) - parseInt(blg.likes)
-      })) 
-    )  
+      }))
+    )
   }, [])
 
   useEffect(() => {
@@ -42,7 +42,7 @@ const App = () => {
       })
       window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
-      ) 
+      )
       blogService.setToken(user.token)
       setUser(user)
       setUsername('')
@@ -71,16 +71,13 @@ const App = () => {
   const updateBlog = (id,blogObject) => {
     blogService
       .update(id,blogObject)
-        .then(returnedBlog => {
-        //setBlogs(blogs.map(blog => blog.id!==returnedBlog.id ? blog.likes : returnedBlog.likes))
-      })
   }
 
   const removeBlog = (id, tok, blog) => {
     if(window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)){
       blogService
       .remove(id, `bearer ${tok}`)
-        .then(returnInfo => {
+        .then(() => {
         setBlogs(blogs.filter(per => per.id !== id))
         setErrorMessage(`Blog Deleted`)
         setTimeout(() => {
@@ -130,7 +127,7 @@ const App = () => {
       <h3>BLOGS</h3>
       <Notification message={errorMessage} type={1} />
       <div>
-        <p>{user.name} logged in <button onClick={()=> handleLogout()}>logout</button></p>
+        <p>{user.name} logged in <button onClick={() => handleLogout()}>logout</button></p>
       </div>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} updateBlog={updateBlog} user={user} removeBlog={removeBlog}/>

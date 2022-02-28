@@ -1,3 +1,4 @@
+/* eslint-disable */
 module.exports = {
     "env": {
         "browser": true,
@@ -19,18 +20,12 @@ module.exports = {
         "react", "jest"
     ],
     "rules": {
-        "indent": [
-            "error",
-            4,
-            2
-        ],
+        "indent": [0],
         "linebreak-style": [
             "error",
             "unix"
         ],
-        "quotes": [
-            "error"
-        ],
+        "quotes": [0],
         "semi": [
             "error",
             "never"
