@@ -22,6 +22,6 @@ const AnecdoteForm = (props) => {
         </form>
       </div>
     )
-  }
+}
   
-  export default AnecdoteForm
+export default AnecdoteForm
