@@ -1,0 +1,39 @@
+h1 {
+    color: green;
+    font-style: italic;
+}
+  
+.note {
+  color: grey;
+  padding-top: 3px;
+  font-size: 15px;
+}
+  
+.error {
+  color: red;
+  background: lightgrey;
+  font-size: 20px;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.notification {
+  color: blue;
+  background: lightgrey;
+  font-size: 20px;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+p {
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
